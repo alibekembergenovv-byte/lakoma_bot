@@ -45,7 +45,7 @@ def test_reply_keyboards():
     button_texts = [btn.text for row in main_kb.keyboard for btn in row]
     assert "📊 Kúnlik sanlardı kiritip barıw" in button_texts
     assert "📋 Búgingi kiritilgen maǵlıwmat" in button_texts
-    assert "📞 Lakoma dispetcher menen baylanıs" in button_texts
+    assert "📞 Menedjer menen baylanıs" in button_texts
 
     # Contact request keyboard
     contact_kb = get_contact_request_keyboard()

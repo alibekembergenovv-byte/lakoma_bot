@@ -6,7 +6,7 @@ def get_main_hospital_keyboard() -> ReplyKeyboardMarkup:
         keyboard=[
             [KeyboardButton(text="📊 Kúnlik sanlardı kiritip barıw")],
             [KeyboardButton(text="📋 Búgingi kiritilgen maǵlıwmat")],
-            [KeyboardButton(text="📞 Lakoma dispetcher menen baylanıs")],
+            [KeyboardButton(text="📞 Menedjer menen baylanıs")],
         ],
         resize_keyboard=True,
     )

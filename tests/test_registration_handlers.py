@@ -231,3 +231,13 @@ async def test_registration_flow_handlers(tmp_path: Path):
     assert db_user["full_name"] == "Gúlshat Ernazarova"
     assert db_user["phone"] == "+998909876543"
     assert db_user["status"] == "pending"
+
+
+@pytest.mark.asyncio
+async def test_on_contact_manager():
+    from bot.handlers.start import on_contact_manager
+    msg = AsyncMock()
+    await on_contact_manager(msg)
+    args, kwargs = msg.answer.call_args
+    assert "+998 95 372 01 10" in args[0]
+    assert kwargs.get("reply_markup") is not None

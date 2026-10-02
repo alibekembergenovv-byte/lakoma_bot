@@ -1,6 +1,6 @@
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.filters import CommandStart
-from aiogram.types import Message
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 
 from bot.config import Config
@@ -62,4 +62,20 @@ async def cmd_start(message: Message, state: FSMContext, config: Config):
         "Sistemaǵa qosılıw ushın <b>Emlewxanańızdı (mákemeńizdi)</b> tańlań:",
         parse_mode="HTML",
         reply_markup=get_hospitals_inline_keyboard(hospitals, show_back=False),
+    )
+
+
+@start_router.message(F.text.in_(["📞 Menedjer menen baylanıs", "Menedjer menen baylanıs", "📞 Lakoma dispetcher menen baylanıs"]))
+async def on_contact_manager(message: Message):
+    call_kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="📞 Qońıraw qılıw (+998953720110)", url="tel:+998953720110")]
+        ]
+    )
+    await message.answer(
+        "📞 <b>«Lakoma» Katering menedjeri menen baylanıs:</b>\n\n"
+        "☎️ <b>Telefon:</b> <a href=\"tel:+998953720110\">+998 95 372 01 10</a>\n\n"
+        "💬 Qálegen soraw, usınıs yamasa kúnlik menyu boyınsha qońıraw qılıwıńız múmkin.",
+        parse_mode="HTML",
+        reply_markup=call_kb,
     )
