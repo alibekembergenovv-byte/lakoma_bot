@@ -47,6 +47,63 @@ def format_admin_summary_text(summary: dict) -> str:
     return "\n".join(lines)
 
 
+def format_monthly_summary_text(records: list[dict], month_str: str, start_date: str, end_date: str) -> str:
+    if not records:
+        return (
+            f"📅 <b>«LAKOMA» KATERING — AYLIQ ESABAT ({month_str})</b>\n"
+            f"📆 <i>Aralıq: {start_date} — {end_date}</i>\n\n"
+            "ℹ️ <i>Bul ay ushın házirshe hesh qanday kúnlik esabat kiritilmegen.</i>"
+        )
+
+    # Group records by hospital
+    hospital_stats = {}
+    for r in records:
+        h_name = r.get("hospital_name", "Belgisiz")
+        if h_name not in hospital_stats:
+            hospital_stats[h_name] = {
+                "breakfast": 0,
+                "lunch": 0,
+                "dinner": 0,
+                "total": 0,
+                "days": 0,
+            }
+        hospital_stats[h_name]["breakfast"] += r.get("breakfast_count", 0)
+        hospital_stats[h_name]["lunch"] += r.get("lunch_count", 0)
+        hospital_stats[h_name]["dinner"] += r.get("dinner_count", 0)
+        hospital_stats[h_name]["total"] += r.get("total_daily", 0)
+        hospital_stats[h_name]["days"] += 1
+
+    total_b = sum(s["breakfast"] for s in hospital_stats.values())
+    total_l = sum(s["lunch"] for s in hospital_stats.values())
+    total_d = sum(s["dinner"] for s in hospital_stats.values())
+    total_all = sum(s["total"] for s in hospital_stats.values())
+
+    lines = [
+        f"📅 <b>«LAKOMA» KATERING — AYLIQ ESABAT ({month_str})</b>",
+        f"📆 <i>Aralıq: {start_date} — {end_date}</i>",
+        "------------------------------------",
+        "🏥 <b>Mákemeler (Bolnicalar) boyınsha jámi:</b>\n",
+    ]
+
+    for idx, (h_name, stats) in enumerate(hospital_stats.items(), 1):
+        lines.append(
+            f"{idx}. <b>{h_name}</b> ({stats['days']} kún kiritilgen):\n"
+            f"   ☕ Azan: <b>{stats['breakfast']:,}</b> | 🍲 Obet: <b>{stats['lunch']:,}</b> | 🌙 Kesh: <b>{stats['dinner']:,}</b>\n"
+            f"   👉 Aylıq jámi: <b>{stats['total']:,}</b> portciya\n"
+        )
+
+    lines.extend([
+        "------------------------------------",
+        "📊 <b>AYLIQ ULÍWMA JÁMI:</b>",
+        f"☕ Jámi azanǵı awqat: <b>{total_b:,}</b> adam",
+        f"🍲 Jámi túslik (obet): <b>{total_l:,}</b> adam",
+        f"🌙 Jámi keshki awqat: <b>{total_d:,}</b> adam",
+        "------------------------------------",
+        f"🔢 <b>AYLIQ JÁMI AWQAT SANÍ:</b> <b>{total_all:,}</b> portciya",
+    ])
+    return "\n".join(lines)
+
+
 @admin_router.message(F.text == "📈 Búgingi ulıwma jıyıntıq")
 async def on_admin_today_summary(message: Message, config: Config):
     if not is_admin(message.from_user.id, config):
@@ -55,6 +112,30 @@ async def on_admin_today_summary(message: Message, config: Config):
     summary = await get_daily_summary(config.db_path, today)
     text = format_admin_summary_text(summary)
     await message.answer(text, parse_mode="HTML")
+
+
+@admin_router.message(F.text.in_(["📅 Aylıq esabat", "Aylıq esabat"]))
+async def on_admin_month_summary(message: Message, config: Config):
+    if not is_admin(message.from_user.id, config):
+        return
+    now = datetime.now()
+    start_date = now.strftime("%Y-%m-01")
+    end_date = now.strftime("%Y-%m-%d")
+    month_str = now.strftime("%Y-%m")
+
+    records = await get_records_for_period(config.db_path, start_date, end_date)
+    text_report = format_monthly_summary_text(records, month_str, start_date, end_date)
+    await message.answer(text_report, parse_mode="HTML")
+
+    file_path = config.exports_dir / f"lakoma_monthly_{month_str}.xlsx"
+    generate_monthly_excel(records, month_str, file_path)
+
+    doc = FSInputFile(file_path, filename=f"Lakoma_Aylıq_Esabat_{month_str}.xlsx")
+    await message.answer_document(
+        document=doc,
+        caption=f"📊 <b>«Lakoma» katering — {month_str} aydıń tolıq Excel esabatı</b>",
+        parse_mode="HTML",
+    )
 
 
 @admin_router.message(F.text == "⚠️ Kiritpegenler dizimi")
@@ -235,6 +316,9 @@ async def on_excel_month_download(callback: CallbackQuery, config: Config):
     month_str = now.strftime("%Y-%m")
 
     records = await get_records_for_period(config.db_path, start_date, end_date)
+    text_report = format_monthly_summary_text(records, month_str, start_date, end_date)
+    await callback.message.answer(text_report, parse_mode="HTML")
+
     file_path = config.exports_dir / f"lakoma_monthly_{month_str}.xlsx"
     generate_monthly_excel(records, month_str, file_path)
 

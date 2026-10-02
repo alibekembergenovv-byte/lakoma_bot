@@ -470,3 +470,62 @@ async def test_on_excel_month_download(tmp_path: Path):
     cb_admin.answer.assert_called_once()
     month_str = datetime.now().strftime("%Y-%m")
     assert (exports_dir / f"lakoma_monthly_{month_str}.xlsx").exists()
+
+
+def test_format_monthly_summary_text():
+    from bot.handlers.admin import format_monthly_summary_text
+    # Empty case
+    empty_res = format_monthly_summary_text([], "2026-10", "2026-10-01", "2026-10-02")
+    assert "AYLIQ ESABAT" in empty_res
+    assert "hesh qanday kúnlik esabat kiritilmegen" in empty_res
+
+    # With records
+    records = [
+        {
+            "hospital_name": "Taxtakópir",
+            "breakfast_count": 120,
+            "lunch_count": 130,
+            "dinner_count": 110,
+            "total_daily": 360,
+        },
+        {
+            "hospital_name": "Taxtakópir",
+            "breakfast_count": 120,
+            "lunch_count": 130,
+            "dinner_count": 110,
+            "total_daily": 360,
+        },
+        {
+            "hospital_name": "Qaraózek",
+            "breakfast_count": 100,
+            "lunch_count": 100,
+            "dinner_count": 90,
+            "total_daily": 290,
+        },
+    ]
+    res = format_monthly_summary_text(records, "2026-10", "2026-10-01", "2026-10-02")
+    assert "Taxtakópir" in res
+    assert "Qaraózek" in res
+    assert "720" in res  # Taxtakópir total
+    assert "290" in res  # Qaraózek total
+    assert "1,010" in res  # Grand total
+
+
+@pytest.mark.asyncio
+async def test_on_admin_month_summary(tmp_path: Path):
+    from bot.handlers.admin import on_admin_month_summary
+    db_file = tmp_path / "test_admin.db"
+    await init_db(db_file)
+    admin_id = 111222
+    config = Config(
+        bot_token="test_token",
+        admin_ids=[admin_id],
+        db_path=db_file,
+        exports_dir=tmp_path / "exports",
+    )
+
+    msg = AsyncMock()
+    msg.from_user.id = admin_id
+    await on_admin_month_summary(msg, config)
+    assert msg.answer.call_count == 1
+    assert msg.answer_document.call_count == 1

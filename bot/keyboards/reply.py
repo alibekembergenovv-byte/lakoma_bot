@@ -25,7 +25,10 @@ def get_contact_request_keyboard() -> ReplyKeyboardMarkup:
 def get_admin_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text="📈 Búgingi ulıwma jıyıntıq")],
+            [
+                KeyboardButton(text="📈 Búgingi ulıwma jıyıntıq"),
+                KeyboardButton(text="📅 Aylıq esabat"),
+            ],
             [
                 KeyboardButton(text="📥 Excel esabat júklew"),
                 KeyboardButton(text="⚠️ Kiritpegenler dizimi"),
