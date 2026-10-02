@@ -11,15 +11,28 @@ def get_regions_inline_keyboard(regions: list[dict]) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-def get_hospitals_inline_keyboard(hospitals: list[dict]) -> InlineKeyboardMarkup:
+def get_hospitals_inline_keyboard(hospitals: list[dict], show_back: bool = True) -> InlineKeyboardMarkup:
     buttons = []
+    row = []
     for h in hospitals:
+        name = h["name"]
+        btn = InlineKeyboardButton(text=name, callback_data=f"reg_hosp:{h['id']}")
+        if len(name) > 16:
+            if row:
+                buttons.append(row)
+                row = []
+            buttons.append([btn])
+        else:
+            row.append(btn)
+            if len(row) == 2:
+                buttons.append(row)
+                row = []
+    if row:
+        buttons.append(row)
+    if show_back:
         buttons.append(
-            [InlineKeyboardButton(text=h["name"], callback_data=f"reg_hosp:{h['id']}")]
+            [InlineKeyboardButton(text="⬅️ Rayondı qayta tańlaw", callback_data="back_to_regions")]
         )
-    buttons.append(
-        [InlineKeyboardButton(text="⬅️ Rayondı qayta tańlaw", callback_data="back_to_regions")]
-    )
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 

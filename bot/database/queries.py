@@ -18,6 +18,20 @@ async def get_hospitals_by_region(db_path: Path, region_id: int) -> list[dict]:
             rows = await cursor.fetchall()
             return [dict(r) for r in rows]
 
+async def get_all_hospitals(db_path: Path) -> list[dict]:
+    async with aiosqlite.connect(db_path) as db:
+        db.row_factory = aiosqlite.Row
+        async with db.execute(
+            """
+            SELECT h.id, h.name, h.region_id, r.name as region_name
+            FROM hospitals h
+            JOIN regions r ON h.region_id = r.id
+            ORDER BY h.id ASC;
+            """
+        ) as cursor:
+            rows = await cursor.fetchall()
+            return [dict(r) for r in rows]
+
 async def get_hospital_by_id(db_path: Path, hospital_id: int) -> dict | None:
     async with aiosqlite.connect(db_path) as db:
         db.row_factory = aiosqlite.Row

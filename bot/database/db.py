@@ -57,16 +57,31 @@ async def init_db(db_path: Path) -> None:
         """)
         await db.commit()
 
-        # Seed regions and hospitals if empty
-        cursor = await db.execute("SELECT COUNT(*) FROM regions;")
-        count = (await cursor.fetchone())[0]
-        if count == 0:
-            for region_name, hosp_list in INITIAL_REGIONS_AND_HOSPITALS.items():
-                cur = await db.execute("INSERT INTO regions (name) VALUES (?);", (region_name,))
-                region_id = cur.lastrowid
-                for hosp_name in hosp_list:
-                    await db.execute(
-                        "INSERT INTO hospitals (region_id, name) VALUES (?, ?);",
-                        (region_id, hosp_name)
-                    )
-            await db.commit()
+        # Seed or sync regions and hospitals with INITIAL_REGIONS_AND_HOSPITALS
+        valid_hospital_names = [
+            h for hosp_list in INITIAL_REGIONS_AND_HOSPITALS.values() for h in hosp_list
+        ]
+        placeholders = ",".join("?" for _ in valid_hospital_names)
+        await db.execute(
+            f"DELETE FROM hospitals WHERE name NOT IN ({placeholders});",
+            tuple(valid_hospital_names),
+        )
+        await db.execute(
+            "DELETE FROM regions WHERE id NOT IN (SELECT DISTINCT region_id FROM hospitals);"
+        )
+        await db.commit()
+
+        for region_name, hosp_list in INITIAL_REGIONS_AND_HOSPITALS.items():
+            await db.execute("INSERT OR IGNORE INTO regions (name) VALUES (?);", (region_name,))
+            async with db.execute("SELECT id FROM regions WHERE name = ?;", (region_name,)) as cur:
+                region_id = (await cur.fetchone())[0]
+            for hosp_name in hosp_list:
+                async with db.execute(
+                    "SELECT id FROM hospitals WHERE name = ?;", (hosp_name,)
+                ) as cur_h:
+                    if not await cur_h.fetchone():
+                        await db.execute(
+                            "INSERT INTO hospitals (region_id, name) VALUES (?, ?);",
+                            (region_id, hosp_name),
+                        )
+        await db.commit()

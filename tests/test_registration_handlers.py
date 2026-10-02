@@ -130,9 +130,9 @@ async def test_cmd_start_user_branches(tmp_path: Path):
     msg_new = AsyncMock()
     msg_new.from_user.id = 2004
     await cmd_start(msg_new, state, config)
-    state.set_state.assert_awaited_with(RegistrationStates.waiting_for_region)
+    state.set_state.assert_awaited_with(RegistrationStates.waiting_for_hospital)
     args, kwargs = msg_new.answer.call_args
-    assert "Rayonıńızdı" in args[0]
+    assert "Emlewxanańızdı" in args[0]
     assert kwargs.get("reply_markup") is not None
 
 

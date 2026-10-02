@@ -4,9 +4,9 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 from bot.config import Config
-from bot.database.queries import get_user, get_regions
+from bot.database.queries import get_user, get_regions, get_all_hospitals
 from bot.keyboards.reply import get_main_hospital_keyboard, get_admin_keyboard
-from bot.keyboards.inline import get_regions_inline_keyboard
+from bot.keyboards.inline import get_regions_inline_keyboard, get_hospitals_inline_keyboard
 from bot.states.states import RegistrationStates
 
 start_router = Router()
@@ -53,13 +53,13 @@ async def cmd_start(message: Message, state: FSMContext, config: Config):
             )
             return
 
-    # New user: Start Registration
-    regions = await get_regions(config.db_path)
-    await state.set_state(RegistrationStates.waiting_for_region)
+    # New user: Start Registration directly by selecting hospital
+    hospitals = await get_all_hospitals(config.db_path)
+    await state.set_state(RegistrationStates.waiting_for_hospital)
     await message.answer(
         "Assalawma áleykum!\n"
         "«Lakoma» Katering xızmeti kúnlik awqat támiynatı botına xosh keldińiz.\n\n"
-        "Sistemaǵa qosılıw ushın dáslep <b>Rayonıńızdı</b> tańlań:",
+        "Sistemaǵa qosılıw ushın <b>Emlewxanańızdı (mákemeńizdi)</b> tańlań:",
         parse_mode="HTML",
-        reply_markup=get_regions_inline_keyboard(regions),
+        reply_markup=get_hospitals_inline_keyboard(hospitals, show_back=False),
     )

@@ -1,57 +1,24 @@
 INITIAL_REGIONS_AND_HOSPITALS: dict[str, list[str]] = {
-    "Nókis qalası": [
-        "Respublika balalar ftiziatriyası",
-        "Respublika qan quyıw orayı",
-        "Nókis qalalıq medicinalıq birlespe",
-        "Respublika ko'p tarmaqlı emlewxanası"
+    "Taxtakópir": [
+        "Taxtakópir"
     ],
-    "Qaraózek rayonı": [
-        "Qaraózek RMO emlewxanası"
+    "Qaraózek": [
+        "Qaraózek"
     ],
-    "Taxtakópir rayonı": [
-        "Taxtakópir RMO emlewxanası"
+    "Shımbay": [
+        "Shımbay",
+        "Shımbay Ǵamxorlıq úyi"
     ],
-    "Taqıyatas rayonı": [
-        "Respublika narkologiyalıq emlewxanası (Taqıyatas)",
-        "Taqıyatas RMO emlewxanası"
+    "Kegeyli": [
+        "Kegeyli"
     ],
-    "Moynaq rayonı": [
-        "Moynaq RMO emlewxanası"
+    "Nókis": [
+        "Nókis háyeller ǵamxorlıq úyı"
     ],
-    "Shomanay rayonı": [
-        "Shomanay RMO emlewxanası"
+    "Xojeli": [
+        "Xojeli Sanatoriya"
     ],
-    "Bozataw rayonı": [
-        "Bozataw RMO emlewxanası"
-    ],
-    "Kegeyli rayonı": [
-        "Kegeyli RMO emlewxanası"
-    ],
-    "Shımbay rayonı": [
-        "Shımbay RMO emlewxanası"
-    ],
-    "Beruniy rayonı": [
-        "Beruniy RMO emlewxanası"
-    ],
-    "Qanlıkól rayonı": [
-        "Qanlıkól RMO emlewxanası"
-    ],
-    "Qońırat rayonı": [
-        "Qońırat RMO emlewxanası"
-    ],
-    "Xojeli rayonı": [
-        "Xojeli RMO emlewxanası"
-    ],
-    "Nókis rayonı": [
-        "Nókis rayonlıq RMO emlewxanası"
-    ],
-    "Tórtkúl rayonı": [
-        "Tórtkúl RMO emlewxanası"
-    ],
-    "Ellikqala rayonı": [
-        "Ellikqala RMO emlewxanası"
-    ],
-    "Ámiwdárya rayonı": [
-        "Ámiwdárya RMO emlewxanası"
+    "Moynaq": [
+        "Moynaq"
     ]
 }

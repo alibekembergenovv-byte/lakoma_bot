@@ -15,6 +15,9 @@ def test_load_config_defaults(tmp_path, monkeypatch):
     assert isinstance(cfg.exports_dir, Path)
 
 def test_seed_data_integrity():
-    assert "Qaraózek rayonı" in INITIAL_REGIONS_AND_HOSPITALS
-    assert "Beruniy rayonı" in INITIAL_REGIONS_AND_HOSPITALS
-    assert len(INITIAL_REGIONS_AND_HOSPITALS["Qaraózek rayonı"]) > 0
+    assert "Qaraózek" in INITIAL_REGIONS_AND_HOSPITALS
+    assert "Taxtakópir" in INITIAL_REGIONS_AND_HOSPITALS
+    assert "Shımbay" in INITIAL_REGIONS_AND_HOSPITALS
+    assert len(INITIAL_REGIONS_AND_HOSPITALS["Qaraózek"]) > 0
+    all_facilities = [h for hosp_list in INITIAL_REGIONS_AND_HOSPITALS.values() for h in hosp_list]
+    assert len(all_facilities) == 8

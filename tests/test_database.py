@@ -139,7 +139,7 @@ async def test_db_lifecycle_and_queries(tmp_path: Path):
     assert summary["total_all"] == 365
     assert summary["submitted_hospitals"] == 1
     assert len(summary["items"]) == 1
-    assert summary["total_hospitals"] >= 17
+    assert summary["total_hospitals"] == 8
 
     # 7. Missing hospitals
     missing = await get_missing_hospitals(db_file, test_date)
