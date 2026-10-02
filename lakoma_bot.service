@@ -1,0 +1,14 @@
+[Unit]
+Description=Lakoma Catering Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/lakoma_catering_bot
+ExecStart=/var/www/lakoma_catering_bot/venv/bin/python run.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
