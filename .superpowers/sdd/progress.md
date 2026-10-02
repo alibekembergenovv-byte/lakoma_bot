@@ -13,8 +13,8 @@
 
 ## Progress
 - Task 1: complete (commit eef2db6, tests passing)
-- Task 2: in_progress
-- Task 3: pending
+- Task 2: complete (commit c0a5f53, tests passing)
+- Task 3: in_progress
 - Task 4: pending
 - Task 5: pending
 - Task 6: pending
