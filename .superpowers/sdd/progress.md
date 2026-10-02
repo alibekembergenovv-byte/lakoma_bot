@@ -12,8 +12,8 @@
 | Task 5,6,7 | Task 8 | Routers & App runner | Consistent. All 4 routers are cleanly included in Dispatcher. |
 
 ## Progress
-- Task 1: pending
-- Task 2: pending
+- Task 1: complete (commit eef2db6, tests passing)
+- Task 2: in_progress
 - Task 3: pending
 - Task 4: pending
 - Task 5: pending
