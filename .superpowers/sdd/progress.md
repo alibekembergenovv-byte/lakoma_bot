@@ -16,7 +16,7 @@
 - Task 2: complete (commit c0a5f53, tests passing)
 - Task 3: complete (commit a724b2a, tests passing)
 - Task 4: complete (commit a099550, tests passing)
-- Task 5: in_progress
-- Task 6: pending
+- Task 5: complete (commit a2411f8, tests passing)
+- Task 6: in_progress
 - Task 7: pending
 - Task 8: pending
